@@ -164,12 +164,12 @@ public class SpringDependencyAnalyzer {
             System.err.println(name + ": " + StringUtils.join(dependencies,','));
         });
 
-//        System.err.println("\n\nBean dependencies:\n");
-//        System.err.println(getBeanGraph());
-//        System.err.println("Bean layers:\n");
-//
-//        getBeanGraph().getLayers().forEach((layer,classes) -> {
-//            System.err.println("" + layer + "\t" + StringUtils.join(classes,','));
-//        });
+        System.err.println("\n\nBean dependencies:\n");
+        System.err.println(getBeanGraph());
+        System.err.println("Bean layers:\n");
+
+        getBeanGraph().getLayers().forEach((layer,classes) -> {
+            System.err.println("" + layer + "\t" + StringUtils.join(classes,','));
+        });
     }
 }
