@@ -25,7 +25,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jillesvangurp</groupId>
     <artifactId>spring-depend</artifactId>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
 
     <name>Spring-Depend</name>
     <description>A tool for generating a spring bean dependency graph</description>
@@ -35,7 +35,7 @@
         <url>git://git@github.com:jillesvangurp/spring-depend.git</url>
         <connection>scm:git:git@github.com:jillesvangurp/spring-depend.git</connection>
         <developerConnection>scm:git:git@github.com:jillesvangurp/spring-depend.git</developerConnection>
-        <tag>spring-depend-0.1</tag>
+        <tag>HEAD</tag>
   </scm>
 
     <licenses>
