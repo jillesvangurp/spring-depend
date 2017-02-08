@@ -86,9 +86,12 @@ public class SimpleGraph<T> extends LinkedHashMap<T, SimpleGraph<T>> {
                 buf.append('\t');
             }
             buf.append(k);
-            buf.append(": ");
-            buf.append(v.toStringWithIndent(indent+1));
-            buf.append("\n");
+            if(v.size()>0){
+                buf.append(":\n");
+                buf.append(v.toStringWithIndent(indent+1));
+            } else {
+                buf.append("\n");
+            }
         });
 
         return buf.toString();
