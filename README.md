@@ -2,6 +2,13 @@
 
 Simple tool for analyzing spring dependencies. Such tools exist but they seemed to be bundled with complicated IDE plugins, which makes standalone usage a bit hard. This is a standalone thing. All you need is a spring application context.
 
+```
+// any instance of spring's GenericApplicationContext or one of the sub classes should work
+SpringDependencyAnalyzer analyzer = new SpringDependencyAnalyzer(context);
+analyzer.printReport();
+```
+
+Features:
   - `Map<String, Set<String>> getBeanDependencies()` returns a list of all the beans in your context and their dependencies
   - `Map<String, Set<String>> getReverseBeanDependencies()` returns reverse dependencies
   - `Map<Integer, Set<Class<?>>> getConfigurationLayers(Class<?> configurationClass)` returns a tree map with the configuration classes ordered in layers by their dependencies on each other
