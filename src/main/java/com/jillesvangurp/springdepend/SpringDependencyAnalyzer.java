@@ -71,20 +71,8 @@ public class SpringDependencyAnalyzer {
     }
 
     public Map<Integer, Set<Class<?>>> getConfigurationLayers(Class<?> configurationClass) {
-        boolean isConfigClass = false;
-        for(Annotation annotation : configurationClass.getAnnotations()) {
-            Class<? extends Annotation> type = annotation.annotationType();
-            if(Configuration.class.equals(type)) {
-                isConfigClass = true;
-            }
-        }
-        if(!isConfigClass) {
-            throw new IllegalArgumentException("not a spring configuration class");
-        }
 
-        ClassGraph subDependencies = buildConfigurationImportGraph(new ClassGraph(), configurationClass);
-        ClassGraph rootGraph = new ClassGraph();
-        rootGraph.put(configurationClass, subDependencies);
+        ClassGraph rootGraph = getConfigurationGraph(configurationClass);
 
 
         Map<Class<?>, Integer> layerMap = new HashMap<>();
@@ -102,6 +90,28 @@ public class SpringDependencyAnalyzer {
         return layers;
     }
 
+    private void validateIsConfigurationClass(Class<?> configurationClass) {
+        boolean isConfigClass = false;
+        for(Annotation annotation : configurationClass.getAnnotations()) {
+            Class<? extends Annotation> type = annotation.annotationType();
+            if(Configuration.class.equals(type)) {
+                isConfigClass = true;
+            }
+        }
+        if(!isConfigClass) {
+            throw new IllegalArgumentException("not a spring configuration class");
+        }
+    }
+
+    public ClassGraph getConfigurationGraph(Class<?> configurationClass) {
+        validateIsConfigurationClass(configurationClass);
+
+        ClassGraph subDependencies = buildConfigurationImportGraph(new ClassGraph(), configurationClass);
+        ClassGraph rootGraph = new ClassGraph();
+        rootGraph.put(configurationClass, subDependencies);
+        return rootGraph;
+    }
+
     private void buildConfigurationLayers(Map<Class<?>, Integer> layerMap, ClassGraph current, int depth) {
         current.forEach((k, v) -> {
             Integer kCount = layerMap.get(k);
@@ -113,7 +123,7 @@ public class SpringDependencyAnalyzer {
     }
 
     private static ClassGraph buildConfigurationImportGraph(ClassGraph parent, Class<?> clazz) {
-        List<Class<?>> imports = getConfigurationImports(clazz);
+        List<Class<?>> imports = getConfigurationImportsFor(clazz);
 
         for(Class<?> c : imports) {
             parent.put(c, buildConfigurationImportGraph(new ClassGraph(), c));
@@ -121,7 +131,7 @@ public class SpringDependencyAnalyzer {
         return parent;
     }
 
-    private static List<Class<?>> getConfigurationImports(Class<?> clazz) {
+    private static List<Class<?>> getConfigurationImportsFor(Class<?> clazz) {
         List<Class<?>> list= new ArrayList<>();
         for(Annotation annotation : clazz.getAnnotations()) {
             Class<? extends Annotation> type = annotation.annotationType();
