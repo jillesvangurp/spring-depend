@@ -117,12 +117,13 @@ public class SpringDependencyAnalyzer {
 
         beanDeps.forEach((bean,deps) -> {
             if(deps.isEmpty()) {
-                // bean has no deps
+                // bean has no deps, so we can figure out everything that depends on this bean here
                 SimpleGraph<String> depGraph = new SimpleGraph<>();
                 SimpleGraph.buildGraph(depGraph,bean, b -> reverseBeanDeps.get(b));
                 graph.put(bean, depGraph);
             }
         });
+        // FIXME technically this is a reverse dependency graph, We need to revert it.
         return graph;
     }
 
