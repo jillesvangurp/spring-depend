@@ -3,9 +3,6 @@ package com.jillesvangurp.springdepend;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,21 +14,23 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.support.GenericApplicationContext;
 
+/**
+ * Spring dependency analyzer that works with any GenericApplicationContext.
+ */
 public class SpringDependencyAnalyzer {
     private final GenericApplicationContext context;
 
-    public static class ClassGraph extends LinkedHashMap<Class<?>, ClassGraph> {
-        private static final long serialVersionUID = 2744375702301542235L;
-
-        public ClassGraph() {
-            super();
-        }
-    }
-
+    /**
+     * @param context create your spring context the usual way and inject it here.
+     */
     public SpringDependencyAnalyzer(GenericApplicationContext context) {
         this.context = context;
     }
 
+    /**
+     * Long lists of dependencies indicate low cohesiveness and high coupling. This helps you identify the problematic beans.
+     * @return map of dependencies for all beans in the context
+     */
     public Map<String, Set<String>> getBeanDependencies() {
         Map<String, Set<String>> beanDeps = new TreeMap<>();
         ConfigurableListableBeanFactory factory = context.getBeanFactory();
@@ -52,6 +51,10 @@ public class SpringDependencyAnalyzer {
         return beanDeps;
     }
 
+    /**
+     * If you have a lot of beans that are not depended on or only once, maybe they shouldn't be a bean at all.
+     * @return map of reverse dependencies for all beans in the context
+     */
     public Map<String, Set<String>> getReverseBeanDependencies() {
         Map<String, Set<String>> reverseBeanDeps = new TreeMap<>();
         Map<String, Set<String>> beanDeps = getBeanDependencies();
@@ -70,24 +73,18 @@ public class SpringDependencyAnalyzer {
         return reverseBeanDeps;
     }
 
+    /**
+     * Organizes the graph of configuration classes in layers that depend on each other.
+     * Classes in the same layer can only import classes in lower layers. Spring does not allow import cycles.
+     * A good pattern is to have a RootConfig for your application that simply imports everything else you need.
+     * The more layers you have the more complex your dependencies.
+     * @param configurationClass the root configuration class that you want to analyze
+     * @return treemap with layers of configuratino
+     */
     public Map<Integer, Set<Class<?>>> getConfigurationLayers(Class<?> configurationClass) {
 
-        ClassGraph rootGraph = getConfigurationGraph(configurationClass);
-
-
-        Map<Class<?>, Integer> layerMap = new HashMap<>();
-        buildConfigurationLayers(layerMap, rootGraph, 0);
-
-        Map<Integer,Set<Class<?>>> layers = new TreeMap<>();
-        layerMap.forEach((k, v) -> {
-            Set<Class<?>> set = layers.get(v);
-            if(set==null){
-                set=new LinkedHashSet<>();
-                layers.put(v, set);
-            }
-            set.add(k);
-        });
-        return layers;
+        SimpleGraph<Class<?>> rootGraph = getConfigurationGraph(configurationClass);
+        return rootGraph.getLayers();
     }
 
     private void validateIsConfigurationClass(Class<?> configurationClass) {
@@ -103,32 +100,30 @@ public class SpringDependencyAnalyzer {
         }
     }
 
-    public ClassGraph getConfigurationGraph(Class<?> configurationClass) {
+    /**
+     * @param configurationClass
+     * @return a graph of the configuration classes
+     */
+    public SimpleGraph<Class<?>> getConfigurationGraph(Class<?> configurationClass) {
         validateIsConfigurationClass(configurationClass);
-
-        ClassGraph subDependencies = buildConfigurationImportGraph(new ClassGraph(), configurationClass);
-        ClassGraph rootGraph = new ClassGraph();
-        rootGraph.put(configurationClass, subDependencies);
-        return rootGraph;
+        return SimpleGraph.treeBuilder(configurationClass, SpringDependencyAnalyzer::getConfigurationImportsFor);
     }
 
-    private void buildConfigurationLayers(Map<Class<?>, Integer> layerMap, ClassGraph current, int depth) {
-        current.forEach((k, v) -> {
-            Integer kCount = layerMap.get(k);
-            if(kCount == null || kCount < depth) {
-                layerMap.put(k, depth);
+    public SimpleGraph<String> getBeanGraph() {
+        Map<String, Set<String>> beanDeps = getBeanDependencies();
+        Map<String, Set<String>> reverseBeanDeps = getReverseBeanDependencies();
+
+        SimpleGraph<String> graph = new SimpleGraph<>();
+
+        beanDeps.forEach((bean,deps) -> {
+            if(deps.isEmpty()) {
+                // bean has no deps
+                SimpleGraph<String> depGraph = new SimpleGraph<>();
+                SimpleGraph.buildGraph(depGraph,bean, b -> reverseBeanDeps.get(b));
+                graph.put(bean, depGraph);
             }
-            buildConfigurationLayers(layerMap, v, depth + 1);
         });
-    }
-
-    private static ClassGraph buildConfigurationImportGraph(ClassGraph parent, Class<?> clazz) {
-        List<Class<?>> imports = getConfigurationImportsFor(clazz);
-
-        for(Class<?> c : imports) {
-            parent.put(c, buildConfigurationImportGraph(new ClassGraph(), c));
-        }
-        return parent;
+        return graph;
     }
 
     private static List<Class<?>> getConfigurationImportsFor(Class<?> clazz) {
@@ -153,10 +148,8 @@ public class SpringDependencyAnalyzer {
     }
 
     public void printReport(Class<?> springConfigurationClass) {
-        Map<Integer, Set<Class<?>>> layers = getConfigurationLayers(springConfigurationClass);
-
         System.err.println("Configuration layers:\n");
-        layers.forEach((layer,classes) -> {
+        getConfigurationLayers(springConfigurationClass).forEach((layer,classes) -> {
             System.err.println("" + layer + "\t" + StringUtils.join(classes,','));
         });
 
@@ -170,5 +163,13 @@ public class SpringDependencyAnalyzer {
         reverseBeanDependencies.forEach((name,dependencies) -> {
             System.err.println(name + ": " + StringUtils.join(dependencies,','));
         });
+
+//        System.err.println("\n\nBean dependencies:\n");
+//        System.err.println(getBeanGraph());
+//        System.err.println("Bean layers:\n");
+//
+//        getBeanGraph().getLayers().forEach((layer,classes) -> {
+//            System.err.println("" + layer + "\t" + StringUtils.join(classes,','));
+//        });
     }
 }

@@ -17,4 +17,9 @@ public class BeanConfig2 {
     public Thingy bean4(Thingy bean1,Thingy bean3) {
         return new Thingy();
     }
+
+    @Bean
+    public Thingy bean5(Thingy bean4) {
+        return new Thingy();
+    }
 }

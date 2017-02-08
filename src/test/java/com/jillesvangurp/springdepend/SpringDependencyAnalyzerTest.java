@@ -1,6 +1,8 @@
 package com.jillesvangurp.springdepend;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.jillesvangurp.springdepend.spring.RootConfig;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -22,6 +24,12 @@ public class SpringDependencyAnalyzerTest extends AbstractTestNGSpringContextTes
 
     public void shouldDumpReportWithoutExceptions() {
         analyzer.printReport(RootConfig.class);
+    }
+
+    public void shouldBuildDepGraph() {
+        SimpleGraph<String> beanGraph = analyzer.getBeanGraph();
+        // FIXME more elaborate asserts once I get this right
+        assertThat(beanGraph.toString()).contains("bean1","bean5");
     }
 
 }
