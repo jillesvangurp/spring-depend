@@ -1,6 +1,6 @@
 # Spring-depend
 
-Simple tool for analyzing spring dependencies. Such tools exist but they seemed to be hopelessly bundled with crappy IDE plugins. This is a standalone thing. All you need is a spring application context.
+Simple tool for analyzing spring dependencies. Such tools exist but they seemed to be bundled with complicated IDE plugins, which makes standalone usage a bit hard. This is a standalone thing. All you need is a spring application context.
 
   - `Map<String, Set<String>> getBeanDependencies()` returns a list of all the beans in your context and their dependencies
   - `Map<String, Set<String>> getReverseBeanDependencies()` returns reverse dependencies
@@ -17,6 +17,9 @@ Simple tool for analyzing spring dependencies. Such tools exist but they seemed 
     <version>0.1</version>
 </dependency>
 ```
+
+Note. the spring dependency in the pom is optional. This allows you to specify which spring version you use. Anything recent (4.x and up) should pretty much work. Beyond that you might have to fix a thing or two to get stuff working.
+
 # License
 
 [MIT](LICENSE)
