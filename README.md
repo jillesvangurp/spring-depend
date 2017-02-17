@@ -3,11 +3,10 @@
 Tool for analyzing spring dependencies exporting your dependencies to neo4j. Similar tools exist but they seem to be bundled with complicated IDE plugins or other stuff I don't really need/use. This makes standalone usage a bit hard. This is a standalone thing. All you need to use this is a spring application context. 
 
 To use: 
- - simply add the dependency to spring-depend to your existing spring project
- - get a reference to your application context in one of the several ways that spring allows you to do this.
- - do something like this:
+ - Add the dependency to spring-depend to your existing spring project
+ - Get a reference to your application context in one of the several ways that spring allows you to do this. Any instance of spring's `GenericApplicationContext` or one of the sub classes should work
+ - Do something like this:
 ```
-// any instance of spring's GenericApplicationContext or one of the sub classes should work
 SpringDependencyAnalyzer analyzer = new SpringDependencyAnalyzer(context);
 analyzer.printReport();
 System.out.println(analyzer.beanGraphCypher()) // copy paste in neo4j console & enjoy!
@@ -26,7 +25,7 @@ Features:
 # Future work
 When time allows, I might work on these topics a bit. Pull requests are welcome of course.
 
-  - Better graph implementation than the rather limited `SimpleGraph` currently included. This was a quick and dirty job. 
+  - Better graph implementation than the rather limited `SimpleGraph` currently included. This was a quick and dirty job but it seems good enough. 
   - Fix the bean graph to not be a reverse dependency graph.
   - Simple metrics for coherence and coupling.
   - Test framework support so you can assert constraints on your dependencies and related metrics from a simple unit test.
