@@ -1,6 +1,6 @@
 # Spring-depend
 
-Tool for analyzing spring dependencies exporting your dependencies to neo4j. Similar tools exist but they seem to be bundled with complicated IDE plugins or other stuff I don't really need/use. This makes standalone usage a bit hard. This is a standalone thing. All you need to use this is a spring application context. 
+Tool for analyzing spring dependencies & exporting your dependencies to neo4j. Similar tools exist but they seem to be bundled with complicated IDE plugins or other stuff I don't really need/use. This makes standalone usage a bit hard. This is a standalone thing. All you need to use this is a spring application context. 
 
 To use: 
  - Add the dependency to spring-depend to your existing spring project
