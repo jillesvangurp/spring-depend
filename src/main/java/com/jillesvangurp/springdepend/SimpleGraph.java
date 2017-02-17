@@ -2,9 +2,11 @@ package com.jillesvangurp.springdepend;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
@@ -21,9 +23,10 @@ public class SimpleGraph<T> extends LinkedHashMap<T, SimpleGraph<T>> {
 
     /**
      * Build a tree graph from a single root
-     * @param root
-     * @param getChildenFunction
+     * @param root root of the tree
+     * @param getChildenFunction function to figure out child nodes for a given root
      * @return acyclic tree following the dependencies from the root.
+     * @param <T> node type
      */
     public static <T> SimpleGraph<T> treeBuilder(T root,Function<T,Collection<T>> getChildenFunction) {
         SimpleGraph<T> subDependencies = SimpleGraph.buildGraph(new SimpleGraph<T>(), root, getChildenFunction);
@@ -36,8 +39,9 @@ public class SimpleGraph<T> extends LinkedHashMap<T, SimpleGraph<T>> {
      * Simple helper to build a acyclic graph.
      * @param parent graph to insert into.
      * @param current current node
-     * @param getChildenFunction function to produce children for the current node
+     * @param getChildenFunction function to figure out child nodes for a given root
      * @return the graph
+     * @param <T> node type
      */
     public static <T> SimpleGraph<T> buildGraph(SimpleGraph<T> parent, T current, Function<T,Collection<T>> getChildenFunction) {
         Collection<T> children = getChildenFunction.apply(current);
@@ -100,5 +104,41 @@ public class SimpleGraph<T> extends LinkedHashMap<T, SimpleGraph<T>> {
     @Override
     public String toString() {
         return toStringWithIndent(0);
+    }
+
+    public String toCypher(String nodeLabel, String dependencyLabel, Function<T,String> nodeNameFunction) {
+        Set<String> nodeCreateStatements = new LinkedHashSet<>();
+        Set<String> relationCreateStatements = new LinkedHashSet<>();
+        toCypher(Optional.empty(),nodeLabel,dependencyLabel, nodeNameFunction, new HashSet<>(), nodeCreateStatements, relationCreateStatements);
+        StringBuilder buf = new StringBuilder();
+        nodeCreateStatements.forEach(s -> buf.append(s + '\n'));
+        relationCreateStatements.forEach(s -> buf.append(s + '\n'));
+
+        return buf.toString();
+
+    }
+
+    private void toCypher(Optional<T> maybeParent,String nodeLabel, String dependencyLabel, Function<T,String> nodeNameFunction, Set<T> seen, Collection<String> createNodes, Collection<String>createRelations) {
+
+        this.forEach((node,subNodes) -> {
+            String nodeName=nodeNameFunction.apply(node);
+            if(!seen.contains(node)) {
+                seen.add(node);
+                createNodes.add(cypherNode(nodeName, nodeLabel));
+            }
+            if(maybeParent.isPresent()) {
+                T parentNode = maybeParent.get();
+                createRelations.add(cypherRelation(nodeNameFunction.apply(parentNode), dependencyLabel, nodeName));
+            }
+            subNodes.toCypher(Optional.of(node),nodeLabel,dependencyLabel,nodeNameFunction,seen,createNodes,createRelations);
+        });
+    }
+
+    private static String cypherNode(String name, String label) {
+        return "CREATE ("+name+":"+label+" {name:\""+name+"\"})";
+    }
+
+    private static String cypherRelation(String n1, String label, String n2) {
+        return "CREATE ("+n1+")-[:"+label+"]->("+n2+")";
     }
 }

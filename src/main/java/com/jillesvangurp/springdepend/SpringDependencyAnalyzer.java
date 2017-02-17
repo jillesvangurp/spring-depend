@@ -101,7 +101,7 @@ public class SpringDependencyAnalyzer {
     }
 
     /**
-     * @param configurationClass
+     * @param configurationClass spring configuration root class from which to calculate the configuration hierarchy
      * @return a graph of the configuration classes
      */
     public SimpleGraph<Class<?>> getConfigurationGraph(Class<?> configurationClass) {
@@ -148,6 +148,14 @@ public class SpringDependencyAnalyzer {
         return list;
     }
 
+    public String configurationGraphCypher(Class<?> rootClass) {
+        return getConfigurationGraph(rootClass).toCypher("ConfigClass", "Imports", c->c.getSimpleName());
+    }
+
+    public String beanGraphCypher() {
+        return getBeanGraph().toCypher("Bean", "DEPENDSON", s->s.replace(".", "_"));
+    }
+
     public void printReport(Class<?> springConfigurationClass) {
         System.err.println("Configuration layers:\n");
         getConfigurationLayers(springConfigurationClass).forEach((layer,classes) -> {
@@ -165,7 +173,7 @@ public class SpringDependencyAnalyzer {
             System.err.println(name + ": " + StringUtils.join(dependencies,','));
         });
 
-        System.err.println("\n\nBean dependencies:\n");
+        System.err.println("\n\nBean dependency graph:\n");
         System.err.println(getBeanGraph());
         System.err.println("Bean layers:\n");
 

@@ -4,6 +4,7 @@ package com.jillesvangurp.springdepend;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.jillesvangurp.springdepend.spring.RootConfig;
+import java.util.Locale;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -30,6 +31,8 @@ public class SpringDependencyAnalyzerTest extends AbstractTestNGSpringContextTes
         SimpleGraph<String> beanGraph = analyzer.getBeanGraph();
         // FIXME more elaborate asserts once I get this right
         assertThat(beanGraph.toString()).contains("bean1","bean5");
+
+        System.err.println(beanGraph.toCypher("bean", "dependsOn", s -> s.replace(".", "_").toLowerCase(Locale.ENGLISH)));
     }
 
 }
