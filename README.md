@@ -14,11 +14,13 @@ Features:
   - `SimpleGraph<String> getBeanGraph()` a graph of the dependencies. (TODO: technically this is a reverse dependency graph that is generated from both the dependency and reverse dependency map. I need to add the ability to invert it.)
   - `SimpleGraph<Class<?>> getConfigurationGraph(Class<?> configurationClass)` return a graph of your `@Configuration` classes by following the imports from the specified root class.
   - `Map<Integer, Set<Class<?>>> getConfigurationLayers(Class<?> configurationClass)` returns a tree map with the configuration classes ordered in layers by their dependencies on each other. The more layers you need, the more complex your spring dependencies are. Consider refactoring them to have less interdependencies. Untangling the the most coupled beans will likely clear this up.
+  - `String configurationGraphCypher(Class<?>)` returns neo4j cypher for your Spring configuration import dependencies in neo4j
+  - `String beanGraphCypher()` returns neo4j cypher for creating your spring bean dependency graph in neo4j
+
 
 # Future work
 When time allows, I might work on these topics a bit. Pull requests are welcome of course.
 
-  - Neo4j export to support visulizations, querying and other goodness that comes with neo4j. Basically, spitting out some cypher should be doable.
   - Better graph implementation than the rather limited `SimpleGraph` currently included. This was a quick and dirty job. 
   - Fix the bean graph to not be a reverse dependency graph.
   - Simple metrics for coherence and coupling.
@@ -31,7 +33,7 @@ When time allows, I might work on these topics a bit. Pull requests are welcome 
     <groupId>com.jillesvangurp</groupId>
     <artifactId>spring-depend</artifactId>
     <!-- check maven central for latest, Readme's get out of date so easily ... -->
-    <version>0.1</version>
+    <version>0.2</version>
 </dependency>
 ```
 
