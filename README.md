@@ -1,11 +1,16 @@
 # Spring-depend
 
-Tool for analyzing spring dependencies. Such tools exist but they seemed to be bundled with complicated IDE plugins, which makes standalone usage a bit hard. This is a standalone thing. All you need is a spring application context.
+Tool for analyzing spring dependencies exporting your dependencies to neo4j. Similar tools exist but they seem to be bundled with complicated IDE plugins or other stuff I don't really need/use. This makes standalone usage a bit hard. This is a standalone thing. All you need to use this is a spring application context. 
 
+To use: 
+ - simply add the dependency to spring-depend to your existing spring project
+ - get a reference to your application context in one of the several ways that spring allows you to do this.
+ - do something like this:
 ```
 // any instance of spring's GenericApplicationContext or one of the sub classes should work
 SpringDependencyAnalyzer analyzer = new SpringDependencyAnalyzer(context);
 analyzer.printReport();
+System.out.println(analyzer.beanGraphCypher()) // copy paste in neo4j console & enjoy!
 ```
 
 Features:
@@ -13,7 +18,7 @@ Features:
   - `Map<String, Set<String>> getReverseBeanDependencies()` returns reverse dependencies. Being used a lot is a good thing; it indicates usefulness. Things that are rarely used might not need to be beans on the other hand.
   - `SimpleGraph<String> getBeanGraph()` a graph of the dependencies. (TODO: technically this is a reverse dependency graph that is generated from both the dependency and reverse dependency map. I need to add the ability to invert it.)
   - `SimpleGraph<Class<?>> getConfigurationGraph(Class<?> configurationClass)` return a graph of your `@Configuration` classes by following the imports from the specified root class.
-  - `Map<Integer, Set<Class<?>>> getConfigurationLayers(Class<?> configurationClass)` returns a tree map with the configuration classes ordered in layers by their dependencies on each other. The more layers you need, the more complex your spring dependencies are. Consider refactoring them to have less interdependencies. Untangling the the most coupled beans will likely clear this up.
+  - `Map<Integer, Set<Class<?>>> getConfigurationLayers(Class<?> configurationClass)` returns a tree map with the configuration classes ordered in layers by their dependencies on each other. The more layers you need, the more complex your spring dependencies are. Consider refactoring them to have less interdependencies. Untangling the the most coupled beans will likely clear this up.  
   - `String configurationGraphCypher(Class<?>)` returns neo4j cypher for your Spring configuration import dependencies in neo4j
   - `String beanGraphCypher()` returns neo4j cypher for creating your spring bean dependency graph in neo4j
 
