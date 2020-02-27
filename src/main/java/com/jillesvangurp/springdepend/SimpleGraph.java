@@ -29,7 +29,8 @@ public class SimpleGraph<T> extends LinkedHashMap<T, SimpleGraph<T>> {
      * @param <T> node type
      */
     public static <T> SimpleGraph<T> treeBuilder(T root,Function<T,Collection<T>> getChildenFunction) {
-        SimpleGraph<T> subDependencies = SimpleGraph.buildGraph(new SimpleGraph<T>(), root, getChildenFunction);
+        Set<T> simpleGraphs = new HashSet<>();
+        SimpleGraph<T> subDependencies = SimpleGraph.buildGraph(new SimpleGraph<T>(), root, getChildenFunction, simpleGraphs);
         SimpleGraph<T> tree = new SimpleGraph<>();
         tree.put(root, subDependencies);
         return tree;
@@ -43,7 +44,7 @@ public class SimpleGraph<T> extends LinkedHashMap<T, SimpleGraph<T>> {
      * @return the graph
      * @param <T> node type
      */
-    public static <T> SimpleGraph<T> buildGraph(SimpleGraph<T> parent, T current, Function<T,Collection<T>> getChildenFunction) {
+    public static <T> SimpleGraph<T> buildGraph(SimpleGraph<T> parent, T current, Function<T,Collection<T>> getChildenFunction, Set<T> treeCrawlerSet) {
         Collection<T> children = getChildenFunction.apply(current);
         if(children!=null) {
             for(T c : children) {
@@ -51,7 +52,10 @@ public class SimpleGraph<T> extends LinkedHashMap<T, SimpleGraph<T>> {
                 if(subGraph==null) {
                     subGraph=new SimpleGraph<T>();
                 }
-                parent.put(c, buildGraph(subGraph, c, getChildenFunction));
+                if(!treeCrawlerSet.contains(c)) {
+                    treeCrawlerSet.add(c);
+                    parent.put(c, buildGraph(subGraph, c, getChildenFunction, treeCrawlerSet));
+                }
             }
         }
         return parent;

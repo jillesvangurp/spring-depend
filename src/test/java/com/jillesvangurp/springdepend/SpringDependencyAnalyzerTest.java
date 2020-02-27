@@ -30,7 +30,8 @@ public class SpringDependencyAnalyzerTest extends AbstractTestNGSpringContextTes
     public void shouldBuildDepGraph() {
         SimpleGraph<String> beanGraph = analyzer.getBeanGraph();
         // FIXME more elaborate asserts once I get this right
-        assertThat(beanGraph.toString()).contains("bean1","bean5");
+
+        assertThat(beanGraph.toString()).contains("bean1","bean6");
 
         System.err.println(beanGraph.toCypher("bean", "dependsOn", s -> s.replace(".", "_").toLowerCase(Locale.ENGLISH)));
     }
