@@ -2,12 +2,8 @@ package com.jillesvangurp.springdepend;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.Configuration;
@@ -119,7 +115,8 @@ public class SpringDependencyAnalyzer {
             if(deps.isEmpty()) {
                 // bean has no deps, so we can figure out everything that depends on this bean here
                 SimpleGraph<String> depGraph = new SimpleGraph<>();
-                SimpleGraph.buildGraph(depGraph,bean, b -> reverseBeanDeps.get(b));
+                Set<String> simpleGraphs = new HashSet<>();
+                SimpleGraph.buildGraph(depGraph,bean, b -> reverseBeanDeps.get(b), simpleGraphs);
                 graph.put(bean, depGraph);
             }
         });
@@ -153,7 +150,7 @@ public class SpringDependencyAnalyzer {
     }
 
     public String beanGraphCypher() {
-        return getBeanGraph().toCypher("Bean", "DEPENDSON", s->s.replace(".", "_"));
+        return getBeanGraph().toCypher("Bean", "DEPENDSON", s->s.replace(".", "_").replace("-", "__"));
     }
 
     public void printReport(Class<?> springConfigurationClass) {

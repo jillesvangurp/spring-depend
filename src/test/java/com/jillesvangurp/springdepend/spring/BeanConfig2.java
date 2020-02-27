@@ -22,4 +22,14 @@ public class BeanConfig2 {
     public Thingy bean5(Thingy bean4) {
         return new Thingy();
     }
+
+    @Bean
+    public Thingy2 bean6() {
+        return new Thingy2();
+    }
+
+    @Bean
+    public Thingy3 bean7() {
+        return new Thingy3();
+    }
 }
