@@ -224,10 +224,13 @@ public class SpringDependencyAnalyzer {
     private void findCycleDependencies(Set<String> circularDependencyDescriptions, Map<String, Set<String>> allBeansDependenciesMap, Set<String> dependecies, Set<String> dependencyNameChain, String targetName, int currentDepth, int maxDepth) {
         currentDepth++;
         int stepDepthValue = currentDepth;
-        Set<String> currentStepNameChain = new LinkedHashSet<>(dependencyNameChain);
         for (String dep : dependecies) {
+            Set<String> currentStepNameChain = new LinkedHashSet<>(dependencyNameChain);
             Set<String> dependeciesOfBeanDep = allBeansDependenciesMap.get(dep);
-            if (dependeciesOfBeanDep == null) continue;
+            if (dependeciesOfBeanDep == null || dependeciesOfBeanDep.isEmpty()) {
+                currentStepNameChain.remove(dep);
+                continue;
+            }
             if (dependeciesOfBeanDep.contains(targetName) && !currentStepNameChain.contains(targetName)) {
                 StringBuilder sb = new StringBuilder(targetName);
                 if (!currentStepNameChain.isEmpty()) sb.append('-').append(StringUtils.join(currentStepNameChain, '-'));

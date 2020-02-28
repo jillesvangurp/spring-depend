@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BeanName5 {
+public class BeanName21 {
     @Autowired
-    BeanName beanName;
+    BeanName22 beanName22;
 }

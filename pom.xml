@@ -26,7 +26,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jillesvangurp</groupId>
     <artifactId>spring-depend</artifactId>
-    <version>0.3.4-SNAPSHOT</version>
+    <version>0.3.5-SNAPSHOT</version>
 
     <name>Spring-Depend</name>
     <description>A tool for generating a spring bean dependency graph</description>

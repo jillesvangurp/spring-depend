@@ -4,14 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class BeanName {
+public class BeanName12 {
 
     @Autowired
-    BeanName11 beanName11;
-
-    @Autowired
-    BeanName21 beanName21;
-
-    @Autowired
-    BeanName31 beanName31;
+    BeanName13 beanName13;
 }
