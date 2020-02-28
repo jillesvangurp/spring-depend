@@ -20,7 +20,42 @@ Features:
   - `Map<Integer, Set<Class<?>>> getConfigurationLayers(Class<?> configurationClass)` returns a tree map with the configuration classes ordered in layers by their dependencies on each other. The more layers you need, the more complex your spring dependencies are. Consider refactoring them to have less interdependencies. Untangling the the most coupled beans will likely clear this up.  
   - `String configurationGraphCypher(Class<?>)` returns neo4j cypher for your Spring configuration import dependencies in neo4j
   - `String beanGraphCypher()` returns neo4j cypher for creating your spring bean dependency graph in neo4j
-
+  - `String getCircularDependencyStatisticJson()` return json report with all circular bean dependency. For example:
+       ```
+        {
+            "createDate": "Feb 28, 2020 11:04:40 AM",
+            "allBeanCircularDependencyCount": 19,
+            "dependencyMap": {
+              "bean7": {
+                "injectedBeanCount": 1,
+                "injectedBeanNames": [
+                  "bean6"
+                ],
+                "circularDependencyCount": 5,
+                "circularDependencyDescriptions": [
+                  "bean7-bean6-bean7",
+                  "bean7-bean6-bean5-bean4-bean1-bean7",
+                  "bean7-bean6-bean5-bean4-bean3-bean7",
+                  "bean7-bean6-bean5-bean7",
+                  "bean7-bean6-bean5-bean4-bean7"
+                ]
+              },
+              "bean6": {
+                "injectedBeanCount": 2,
+                "injectedBeanNames": [
+                  "bean5",
+                  "bean7"
+                ],
+                "circularDependencyCount": 4,
+                "circularDependencyDescriptions": [
+                  "bean6-bean5-bean4-bean7-bean6",
+                  "bean6-bean5-bean4-bean1-bean3-bean7-bean6",
+                  "bean6-bean5-bean4-bean1-bean7-bean6",
+                  "bean6-bean5-bean7-bean6"
+                ]
+              }
+        }
+       ``` 
 
 # Future work
 When time allows, I might work on these topics a bit. Pull requests are welcome of course.
