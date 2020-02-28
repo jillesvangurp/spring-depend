@@ -31,9 +31,15 @@ public class SpringDependencyAnalyzerTest extends AbstractTestNGSpringContextTes
         SimpleGraph<String> beanGraph = analyzer.getBeanGraph();
         // FIXME more elaborate asserts once I get this right
 
-        assertThat(beanGraph.toString()).contains("bean1","bean6");
+        assertThat(beanGraph.toString()).contains("beanName1","beanName5");
 
         System.err.println(beanGraph.toCypher("bean", "dependsOn", s -> s.replace(".", "_").toLowerCase(Locale.ENGLISH)));
+    }
+
+    public void shouldPrintCircularDependencyStatistic() {
+        String circularDependencyStatisticJson = analyzer.getCircularDependencyStatisticJson();
+        System.err.println(circularDependencyStatisticJson);
+        assertThat(circularDependencyStatisticJson).contains("beanName1-beanName3-beanName5-beanName-beanName1");
     }
 
 }

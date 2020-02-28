@@ -21,11 +21,12 @@
 * SOFTWARE.
 */
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jillesvangurp</groupId>
     <artifactId>spring-depend</artifactId>
-    <version>0.3.3-SNAPSHOT</version>
+    <version>0.3.4-SNAPSHOT</version>
 
     <name>Spring-Depend</name>
     <description>A tool for generating a spring bean dependency graph</description>
@@ -36,7 +37,7 @@
         <connection>scm:git:git@github.com:jillesvangurp/spring-depend.git</connection>
         <developerConnection>scm:git:git@github.com:jillesvangurp/spring-depend.git</developerConnection>
         <tag>HEAD</tag>
-  </scm>
+    </scm>
 
     <licenses>
         <license>
@@ -95,9 +96,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
-	<prerequisites>
-		<maven>3.0.4</maven>
-	</prerequisites>
+    <prerequisites>
+        <maven>3.0.4</maven>
+    </prerequisites>
 
     <build>
         <plugins>
@@ -120,20 +121,20 @@
                     <threadCount>10</threadCount>
                 </configuration>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-javadoc-plugin</artifactId>-->
-<!--                <version>2.9</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>documentation</id>-->
-<!--                        <phase>prepare-package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>jar</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+                <executions>
+                    <execution>
+                        <id>documentation</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -179,9 +180,9 @@
         </plugins>
         <extensions>
             <extension>
-            <artifactId>wagon-webdav-jackrabbit</artifactId>
-            <groupId>org.apache.maven.wagon</groupId>
-            <version>2.2</version>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <groupId>org.apache.maven.wagon</groupId>
+                <version>2.2</version>
             </extension>
         </extensions>
         <pluginManagement>
@@ -238,6 +239,12 @@
             <optional>true</optional> <!-- include your own dependency for javax.annotations -->
         </dependency>
         <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.8.6</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.4</version>
@@ -274,11 +281,11 @@
             </exclusions>
         </dependency>
         <dependency>
-        <groupId>org.hamcrest</groupId>
+            <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
             <version>1.3</version>
             <scope>test</scope>
-        </dependency>   
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
@@ -291,7 +298,7 @@
             </exclusions>
             <scope>test</scope>
         </dependency>
-                <dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.22</version>
@@ -314,6 +321,6 @@
             <artifactId>jul-to-slf4j</artifactId>
             <version>1.7.22</version>
         </dependency>
-             
+
     </dependencies>
 </project>
