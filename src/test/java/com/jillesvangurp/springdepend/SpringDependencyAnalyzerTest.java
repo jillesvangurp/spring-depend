@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.jillesvangurp.springdepend.spring.RootConfig;
 import java.util.Locale;
-import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeMethod;
@@ -19,7 +19,7 @@ public class SpringDependencyAnalyzerTest extends AbstractTestNGSpringContextTes
 
     @BeforeMethod
     public void before() {
-        GenericApplicationContext context =  (GenericApplicationContext) super.applicationContext;
+        AbstractApplicationContext context =  (AbstractApplicationContext) super.applicationContext;
         analyzer = new SpringDependencyAnalyzer(context);
     }
 

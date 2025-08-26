@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.support.GenericApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -17,15 +17,15 @@ import java.util.*;
 import static java.util.stream.Collectors.toMap;
 
 /**
- * Spring dependency analyzer that works with any GenericApplicationContext.
+ * Spring dependency analyzer that works with any AbstractApplicationContext.
  */
 public class SpringDependencyAnalyzer {
-    private final GenericApplicationContext context;
+    private final AbstractApplicationContext context;
 
     /**
      * @param context create your spring context the usual way and inject it here.
      */
-    public SpringDependencyAnalyzer(GenericApplicationContext context) {
+    public SpringDependencyAnalyzer(AbstractApplicationContext context) {
         this.context = context;
     }
 

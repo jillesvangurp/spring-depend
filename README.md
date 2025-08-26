@@ -4,7 +4,7 @@ Tool for analyzing spring dependencies & exporting your dependencies to neo4j. S
 
 To use: 
  - Add the dependency to spring-depend to your existing spring project
- - Get a reference to your application context in one of the several ways that spring allows you to do this. Any instance of spring's `GenericApplicationContext` or one of the sub classes should work
+ - Get a reference to your application context in one of the several ways that spring allows you to do this. Any instance of spring's `AbstractApplicationContext` or one of the sub classes should work
  - Do something like this:
 ```
 SpringDependencyAnalyzer analyzer = new SpringDependencyAnalyzer(context);
