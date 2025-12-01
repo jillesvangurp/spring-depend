@@ -2,6 +2,8 @@
 
 Tool for analyzing spring dependencies & exporting your dependencies to neo4j. Similar tools exist but they seem to be bundled with complicated IDE plugins or other stuff I don't really need/use. This makes standalone usage a bit hard. This is a standalone thing. All you need to use this is a spring application context. 
 
+**Note** I wrote this many years ago. It seems that people still like it. But it could use an update and I'm not really planning to do that. So, anyone with time, please feel free to do that. Pull request are optional but appreciated of course. Otherwise, feel free to make this your own. It's an ideal vibe coding project; perhaps for a Friday afternoon or so. Some low hanging fruit: modernize the dependencies, port it to Kotlin (would be my first choice, because not dealing with Java at this point), support more grahp formats, perhaps add an SVG exporter, etc. Maybe add some tests and fix a few bugs (I'm sure there probably are some). 
+
 To use: 
  - Add the dependency to spring-depend to your existing spring project
  - Get a reference to your application context in one of the several ways that spring allows you to do this. Any instance of spring's `AbstractApplicationContext` or one of the sub classes should work
@@ -56,14 +58,6 @@ Features:
               }
         }
        ``` 
-
-# Future work
-When time allows, I might work on these topics a bit. Pull requests are welcome of course.
-
-  - Better graph implementation than the rather limited `SimpleGraph` currently included. This was a quick and dirty job but it seems good enough. 
-  - Fix the bean graph to not be a reverse dependency graph.
-  - Simple metrics for coherence and coupling.
-  - Test framework support so you can assert constraints on your dependencies and related metrics from a simple unit test.
 
 # Get it from Maven Central
 
